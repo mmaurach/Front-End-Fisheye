@@ -1,13 +1,20 @@
-//recuperer l'id du photographer depuis le lien
+//Recuperation de l'id depuis l'URL
 function getPhotographerIdFromUrl() {
   const params = new URLSearchParams(window.location.search);
   return parseInt(params.get("id"));
 }
+
 //chercher depuis le fichier json l'element photographer qui correspond à l'id passé
 async function getPhotographerById(id) {
   const response = await fetch("./data/photographers.json");
   const data = await response.json();
   return data.photographers.find((photographer) => photographer.id === id);
+}
+
+async function getMediaByPhotographerId(id) {
+  const response = await fetch("./data/photographers.json");
+  const data = await response.json();
+  return data.media.filter((media) => media.photographerId === id);
 }
 
 function displayPhotographer(photographer) {
@@ -41,14 +48,25 @@ function displayPhotographer(photographer) {
   header.appendChild(photoEl);
 }
 
-async function init() {
-  const params = new URLSearchParams(window.location.search);
-  const photographerId = parseInt(params.get("id"));
+function displayMedia(mediaList, photographerName) {
+  const mediaSection = document.querySelector(".media-section");
 
+  mediaList.forEach((media) => {
+    const template = mediaTemplate(media, photographerName);
+    const mediaCard = template.getMediaCardDOM();
+    mediaSection.appendChild(mediaCard);
+  });
+}
+
+async function init() {
+  const photographerId = getPhotographerIdFromUrl();
   const photographer = await getPhotographerById(photographerId);
 
   if (photographer) {
     displayPhotographer(photographer);
+
+    const mediaList = await getMediaByPhotographerId(photographerId);
+    displayMedia(mediaList, photographer.name); // 👈 ici on passe le nom
   } else {
     console.error("Photographe non trouvé !");
   }
