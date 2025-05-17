@@ -62,14 +62,16 @@ async function init() {
   const photographerId = getPhotographerIdFromUrl();
   const photographer = await getPhotographerById(photographerId);
 
-  if (photographer) {
-    displayPhotographer(photographer);
-
-    const mediaList = await getMediaByPhotographerId(photographerId);
-    displayMedia(mediaList, photographer.name); // 👈 ici on passe le nom
-  } else {
+  if (!photographer) {
     console.error("Photographe non trouvé !");
+    return;
   }
+
+  displayPhotographer(photographer);
+
+  const folderName = photographer.name.split(" ")[0]; // On utilise le prénom comme nom de dossier
+  const mediaList = await getMediaByPhotographerId(photographerId);
+  displayMedia(mediaList, folderName);
 }
 
 init();

@@ -5,7 +5,6 @@ function mediaTemplate(media, photographerName) {
     : `./assets/images/${photographerName}/${video}`;
 
   function getMediaCardDOM() {
-    console.log("mediaSrc:", mediaSrc);
     const article = document.createElement("article");
 
     let mediaElement;
@@ -19,15 +18,24 @@ function mediaTemplate(media, photographerName) {
       mediaElement.setAttribute("controls", true);
     }
 
+    const mediaInfo = document.createElement("div");
+    mediaInfo.classList.add("media-info");
+
     const titleEl = document.createElement("h3");
     titleEl.textContent = title;
 
     const likesEl = document.createElement("p");
-    likesEl.textContent = `${likes} ❤️`;
+    likesEl.classList.add("media-likes");
+    likesEl.innerHTML = `
+        <span class="likes-count">${likes}</span>
+        <i class="fa-solid fa-heart" aria-label="likes"></i>
+      `;
+
+    mediaInfo.appendChild(titleEl);
+    mediaInfo.appendChild(likesEl);
 
     article.appendChild(mediaElement);
-    article.appendChild(titleEl);
-    article.appendChild(likesEl);
+    article.appendChild(mediaInfo);
 
     return article;
   }
