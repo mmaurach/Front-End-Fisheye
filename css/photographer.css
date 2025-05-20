@@ -107,6 +107,28 @@
   z-index: 1000;
 }
 
+.sort-container {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  padding-left: 100px;
+  margin-top: 20px;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.custom-sort-select {
+  width: 170px;
+  background-color: #901c1c;
+  color: white;
+  border: none;
+  padding: 20px 23px;
+  font-size: 18px;
+  font-weight: 700;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
 /* Bouton centré : déjà bon */
 .contact_button {
   font-size: 20px;

@@ -35,6 +35,7 @@ function displayPhotographer(photographer) {
 function displayMedia(mediaList, photographer) {
   const mediaSection = document.querySelector(".media-section");
   mediaSection.innerHTML = "";
+
   let totalLikes = 0;
 
   mediaList.forEach((media) => {
@@ -44,40 +45,88 @@ function displayMedia(mediaList, photographer) {
     mediaSection.appendChild(mediaCard);
   });
 
-  // Ajout du conteneur total likes + prix
-  const likesContainer = document.createElement("div");
-  likesContainer.classList.add("photographer-likes-container");
+  // 💡 Récupère ou crée le compteur total
+  let totalLikesEl = document.querySelector(".total-likes");
+  if (!totalLikesEl) {
+    const likesContainer = document.createElement("div");
+    likesContainer.classList.add("photographer-likes-container");
+    likesContainer.innerHTML = `
+      <div class="likes-total">
+        <span class="total-likes">${totalLikes}</span>
+        <i class="fa-solid fa-heart"></i>
+      </div>
+      <div class="price">${photographer.price}€/jour</div>
+    `;
+    document.querySelector("main").appendChild(likesContainer);
+    totalLikesEl = likesContainer.querySelector(".total-likes");
+  } else {
+    totalLikesEl.textContent = totalLikes;
+  }
 
-  likesContainer.innerHTML = `
-    <div class="likes-total">
-      <span class="total-likes">${totalLikes}</span>
-      <i class="fa-solid fa-heart"></i>
-    </div>
-    <div class="price">${photographer.price}€/jour</div>
-  `;
-
-  document.querySelector("main").appendChild(likesContainer);
-
-  const totalLikesEl = document.querySelector(".total-likes");
-
-  // Ajout des écouteurs de clics sur les cœurs
+  // ♻️ Reconnexion des écouteurs de clic pour mise à jour dynamique
   document.querySelectorAll(".like-btn").forEach((heart) => {
     heart.addEventListener("click", () => {
       const countSpan = heart.previousElementSibling;
       let currentLikes = parseInt(countSpan.textContent, 10);
+      let total = parseInt(totalLikesEl.textContent, 10);
       const isLiked = heart.classList.contains("liked");
 
       if (isLiked) {
         countSpan.textContent = currentLikes - 1;
-        totalLikesEl.textContent = parseInt(totalLikesEl.textContent, 10) - 1;
+        totalLikesEl.textContent = total - 1;
         heart.classList.remove("liked");
       } else {
         countSpan.textContent = currentLikes + 1;
-        totalLikesEl.textContent = parseInt(totalLikesEl.textContent, 10) + 1;
+        totalLikesEl.textContent = total + 1;
         heart.classList.add("liked");
       }
     });
   });
+}
+
+function addSortDropdown(mediaList, photographer) {
+  const main = document.querySelector("main");
+
+  const sortWrapper = document.createElement("div");
+  sortWrapper.classList.add("sort-container");
+
+  sortWrapper.innerHTML = `
+    <label for="sort-select">Trier par :</label>
+    <select id="sort-select" class="custom-sort-select">
+      <option value="popularity">Popularité</option>
+      <option value="title">Titre</option>
+      <option value="date">Date</option>
+    </select>
+  `;
+
+  // Insérer avant media-section
+  const mediaSection = document.querySelector(".media-section");
+  main.insertBefore(sortWrapper, mediaSection);
+
+  const select = sortWrapper.querySelector("#sort-select");
+  select.addEventListener("change", (e) => {
+    const selected = e.target.value;
+    const sorted = sortMedia(mediaList, selected);
+    displayMedia(sorted, photographer); // On réaffiche les médias triés
+  });
+}
+
+function sortMedia(mediaList, criterion) {
+  const sorted = [...mediaList]; // Copie pour ne pas modifier l'original
+
+  switch (criterion) {
+    case "popularity":
+      sorted.sort((a, b) => b.likes - a.likes);
+      break;
+    case "title":
+      sorted.sort((a, b) => a.title.localeCompare(b.title));
+      break;
+    case "date":
+      sorted.sort((a, b) => new Date(b.date) - new Date(a.date));
+      break;
+  }
+
+  return sorted;
 }
 
 async function init() {
@@ -91,6 +140,7 @@ async function init() {
 
   const mediaList = await getMediaByPhotographerId(photographerId);
   displayPhotographer(photographer);
+  addSortDropdown(mediaList, photographer);
   displayMedia(mediaList, photographer);
 }
 
