@@ -91,6 +91,22 @@
   color: #901c1c;
 }
 
+.photographer-likes-container {
+  position: fixed;
+  bottom: 0;
+  right: 35px;
+  background-color: #db8876;
+  padding: 15px 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  font-size: 24px;
+  color: #000;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+}
+
 /* Bouton centré : déjà bon */
 .contact_button {
   font-size: 20px;

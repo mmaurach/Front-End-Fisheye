@@ -33,7 +33,7 @@ function mediaTemplate(media, photographer) {
     likesEl.classList.add("media-likes");
     likesEl.innerHTML = `
         <span class="likes-count">${likes}</span>
-        <i class="fa-solid fa-heart" aria-label="likes"></i>
+        <i class="fa-solid fa-heart like-btn tabindex="0"" aria-label="likes"></i>
       `;
 
     mediaInfo.appendChild(titleEl);

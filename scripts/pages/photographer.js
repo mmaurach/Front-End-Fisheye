@@ -34,16 +34,50 @@ function displayPhotographer(photographer) {
 
 function displayMedia(mediaList, photographer) {
   const mediaSection = document.querySelector(".media-section");
-  mediaSection.innerHTML="";
-  let totalLikes =0;
+  mediaSection.innerHTML = "";
+  let totalLikes = 0;
+
   mediaList.forEach((media) => {
     const template = mediaTemplate(media, photographer);
     const mediaCard = template.getMediaCardDOM();
-    totalLikes=totalLikes+template.likes;
+    totalLikes += template.likes;
     mediaSection.appendChild(mediaCard);
   });
 
-  console.log(totalLikes);
+  // Ajout du conteneur total likes + prix
+  const likesContainer = document.createElement("div");
+  likesContainer.classList.add("photographer-likes-container");
+
+  likesContainer.innerHTML = `
+    <div class="likes-total">
+      <span class="total-likes">${totalLikes}</span>
+      <i class="fa-solid fa-heart"></i>
+    </div>
+    <div class="price">${photographer.price}€/jour</div>
+  `;
+
+  document.querySelector("main").appendChild(likesContainer);
+
+  const totalLikesEl = document.querySelector(".total-likes");
+
+  // Ajout des écouteurs de clics sur les cœurs
+  document.querySelectorAll(".like-btn").forEach((heart) => {
+    heart.addEventListener("click", () => {
+      const countSpan = heart.previousElementSibling;
+      let currentLikes = parseInt(countSpan.textContent, 10);
+      const isLiked = heart.classList.contains("liked");
+
+      if (isLiked) {
+        countSpan.textContent = currentLikes - 1;
+        totalLikesEl.textContent = parseInt(totalLikesEl.textContent, 10) - 1;
+        heart.classList.remove("liked");
+      } else {
+        countSpan.textContent = currentLikes + 1;
+        totalLikesEl.textContent = parseInt(totalLikesEl.textContent, 10) + 1;
+        heart.classList.add("liked");
+      }
+    });
+  });
 }
 
 async function init() {
@@ -54,7 +88,7 @@ async function init() {
     console.error("Photographe non trouvé !");
     return;
   }
-  
+
   const mediaList = await getMediaByPhotographerId(photographerId);
   displayPhotographer(photographer);
   displayMedia(mediaList, photographer);
