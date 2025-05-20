@@ -1,5 +1,14 @@
 #contact_modal {
-  display: none;
+  display: none; /* caché par défaut */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5); /* fond sombre transparent */
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
 }
 
 .photograph-header {
@@ -41,7 +50,7 @@
 .media-section {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: space-between;
   column-gap: 95px;
   row-gap: 20px;
   padding: 40px 100px;
@@ -123,7 +132,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 35px;
-  margin: auto;
+  z-index: 1001; /* au-dessus du fond sombre */
 }
 
 .modal header {

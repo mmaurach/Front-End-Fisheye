@@ -42,11 +42,25 @@ function photographerTemplate(data) {
     return article;
   }
   function getUserDetail() {
+    const infoContainer = document.createElement("div");
+    infoContainer.classList.add("photographer-info");
+  
+    const nameEl = document.createElement("h1");
+    nameEl.textContent = name;
+    infoContainer.appendChild(nameEl);
 
     const location = document.createElement("p");
     location.className = "photographer-location";
     location.textContent = `${city}, ${country}`;
-     return location;
+    infoContainer.appendChild(location);
+
+    const taglineEl = document.createElement("p");
+    taglineEl.classList.add("photographer-tagline");
+    taglineEl.textContent = tagline;
+    
+ 
+    infoContainer.appendChild(taglineEl);
+     return infoContainer;
   }
   function getUserPhoto() {
     const img = document.createElement("img");

@@ -1,8 +1,7 @@
-function mediaTemplate(media, photographerName) {
+function mediaTemplate(media, photographer) {
   const { title, image, video, likes } = media;
-  const mediaSrc = image
-    ? `./assets/images/${photographerName}/${image}`
-    : `./assets/images/${photographerName}/${video}`;
+
+  const folderName = photographer.name.split(" ")[0].replace("-", " ");
 
   function getMediaCardDOM() {
     const article = document.createElement("article");
@@ -10,11 +9,17 @@ function mediaTemplate(media, photographerName) {
     let mediaElement;
     if (image) {
       mediaElement = document.createElement("img");
-      mediaElement.setAttribute("src", mediaSrc);
+      mediaElement.setAttribute(
+        "src",
+        `./assets/images/${folderName}/${image}`
+      );
       mediaElement.setAttribute("alt", title);
     } else {
       mediaElement = document.createElement("video");
-      mediaElement.setAttribute("src", mediaSrc);
+      mediaElement.setAttribute(
+        "src",
+        `./assets/images/${folderName}/${video}`
+      );
       mediaElement.setAttribute("controls", true);
     }
 
@@ -40,5 +45,5 @@ function mediaTemplate(media, photographerName) {
     return article;
   }
 
-  return { getMediaCardDOM };
+  return { getMediaCardDOM, likes };
 }
