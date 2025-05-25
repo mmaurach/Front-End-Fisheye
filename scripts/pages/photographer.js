@@ -47,61 +47,40 @@ function displayMedia(mediaList, photographer) {
 
   //Mettre à jour le total likes et le prix
   updateTotaux(totalLikes, photographer.price);
-
 }
 
-function updateTotaux(totalLikes, price){
-
+function updateTotaux(totalLikes, price) {
   const totalLikesEl = document.querySelector(".total-likes");
   const priceEl = document.querySelector(".price");
-  
-    totalLikesEl.textContent = `${totalLikes}`;
-    priceEl.textContent = `${price}€/jour`;
+
+  totalLikesEl.textContent = `${totalLikes}`;
+  priceEl.textContent = `${price}€/jour`;
 }
 
-function updateTotalLikes(sens){
-
+function updateTotalLikes(sens) {
   const totalLikesEl = document.querySelector(".total-likes");
-  let totalLikes = parseInt(totalLikesEl.textContent)
+  let totalLikes = parseInt(totalLikesEl.textContent);
 
-  if(sens==1){
-    totalLikesEl.textContent = totalLikes+1;
+  if (sens == 1) {
+    totalLikesEl.textContent = totalLikes + 1;
   }
-  if(sens==-1){
-    totalLikesEl.textContent = totalLikes-1;
+  if (sens == -1) {
+    totalLikesEl.textContent = totalLikes - 1;
   }
-  
 }
 
-function addSortDropdown(mediaList, photographer) {
-  const main = document.querySelector("main");
+function setupSortDropdown(mediaList, photographer) {
+  const select = document.querySelector("#sort-select");
 
-  const sortWrapper = document.createElement("div");
-  sortWrapper.classList.add("sort-container");
-
-  sortWrapper.innerHTML = `
-    <label for="sort-select">Trier par :</label>
-    <select id="sort-select" class="custom-sort-select">
-      <option value="popularity">Popularité</option>
-      <option value="title">Titre</option>
-      <option value="date">Date</option>
-    </select>
-  `;
-
-  // Insérer avant media-section
-  const mediaSection = document.querySelector(".media-section");
-  main.insertBefore(sortWrapper, mediaSection);
-
-  const select = sortWrapper.querySelector("#sort-select");
   select.addEventListener("change", (e) => {
     const selected = e.target.value;
     const sorted = sortMedia(mediaList, selected);
-    displayMedia(sorted, photographer); // On réaffiche les médias triés
+    displayMedia(sorted, photographer);
   });
 }
 
 function sortMedia(mediaList, criterion) {
-  const sorted = [...mediaList]; // Copie pour ne pas modifier l'original
+  const sorted = [...mediaList];
 
   switch (criterion) {
     case "popularity":
@@ -129,7 +108,7 @@ async function init() {
 
   const mediaList = await getMediaByPhotographerId(photographerId);
   displayPhotographer(photographer);
-  addSortDropdown(mediaList, photographer);
+  setupSortDropdown(mediaList, photographer);
   displayMedia(mediaList, photographer);
 }
 
