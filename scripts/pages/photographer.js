@@ -45,43 +45,32 @@ function displayMedia(mediaList, photographer) {
     mediaSection.appendChild(mediaCard);
   });
 
-  // 💡 Récupère ou crée le compteur total
-  let totalLikesEl = document.querySelector(".total-likes");
-  if (!totalLikesEl) {
-    const likesContainer = document.createElement("div");
-    likesContainer.classList.add("photographer-likes-container");
-    likesContainer.innerHTML = `
-      <div class="likes-total">
-        <span class="total-likes">${totalLikes}</span>
-        <i class="fa-solid fa-heart"></i>
-      </div>
-      <div class="price">${photographer.price}€/jour</div>
-    `;
-    document.querySelector("main").appendChild(likesContainer);
-    totalLikesEl = likesContainer.querySelector(".total-likes");
-  } else {
-    totalLikesEl.textContent = totalLikes;
+  //Mettre à jour le total likes et le prix
+  updateTotaux(totalLikes, photographer.price);
+
+}
+
+function updateTotaux(totalLikes, price){
+
+  const totalLikesEl = document.querySelector(".total-likes");
+  const priceEl = document.querySelector(".price");
+  
+    totalLikesEl.textContent = `${totalLikes}`;
+    priceEl.textContent = `${price}€/jour`;
+}
+
+function updateTotalLikes(sens){
+
+  const totalLikesEl = document.querySelector(".total-likes");
+  let totalLikes = parseInt(totalLikesEl.textContent)
+
+  if(sens==1){
+    totalLikesEl.textContent = totalLikes+1;
   }
-
-  // ♻️ Reconnexion des écouteurs de clic pour mise à jour dynamique
-  document.querySelectorAll(".like-btn").forEach((heart) => {
-    heart.addEventListener("click", () => {
-      const countSpan = heart.previousElementSibling;
-      let currentLikes = parseInt(countSpan.textContent, 10);
-      let total = parseInt(totalLikesEl.textContent, 10);
-      const isLiked = heart.classList.contains("liked");
-
-      if (isLiked) {
-        countSpan.textContent = currentLikes - 1;
-        totalLikesEl.textContent = total - 1;
-        heart.classList.remove("liked");
-      } else {
-        countSpan.textContent = currentLikes + 1;
-        totalLikesEl.textContent = total + 1;
-        heart.classList.add("liked");
-      }
-    });
-  });
+  if(sens==-1){
+    totalLikesEl.textContent = totalLikes-1;
+  }
+  
 }
 
 function addSortDropdown(mediaList, photographer) {

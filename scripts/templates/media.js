@@ -1,6 +1,6 @@
 function mediaTemplate(media, photographer) {
   const { title, image, video, likes } = media;
-
+  let cardLike = likes;
   const folderName = photographer.name.split(" ")[0].replace("-", " ");
 
   function getMediaCardDOM() {
@@ -31,10 +31,38 @@ function mediaTemplate(media, photographer) {
 
     const likesEl = document.createElement("p");
     likesEl.classList.add("media-likes");
-    likesEl.innerHTML = `
-        <span class="likes-count">${likes}</span>
-        <i class="fa-solid fa-heart like-btn tabindex="0"" aria-label="likes"></i>
-      `;
+    
+    const span = document.createElement('span');
+    span.classList.add("likes-count");
+    span.textContent = `${likes}`;
+    
+    const iconHurt = document.createElement('i');
+    iconHurt.setAttribute("class", "fa-solid fa-heart like-btn");
+    iconHurt.setAttribute("tabindex","0");
+    iconHurt.setAttribute("aria-label","likes");
+    
+    likesEl.appendChild(span);
+    likesEl.appendChild(iconHurt);
+
+    iconHurt.addEventListener("click", () => {
+        
+        const isLiked = iconHurt.classList.contains("fa-solid");
+  
+        if (isLiked) {
+          cardLike = cardLike - 1;
+          span.textContent = cardLike;
+          iconHurt.classList.remove("fa-solid");
+          iconHurt.classList.add("fa-regular");
+          updateTotalLikes(-1);
+        } else {
+          cardLike = cardLike + 1;
+          span.textContent = cardLike;
+          iconHurt.classList.add("fa-solid");
+          iconHurt.classList.remove("fa-regular");
+          updateTotalLikes(1);
+        }
+  });
+
 
     mediaInfo.appendChild(titleEl);
     mediaInfo.appendChild(likesEl);
