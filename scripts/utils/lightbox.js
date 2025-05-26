@@ -36,13 +36,56 @@ function prevMedia() {
   displayLightboxMedia(currentIndex);
 }
 
-// Event listeners
 document.addEventListener("DOMContentLoaded", () => {
   const closeBtn = document.querySelector(".lightbox-close");
   const nextBtn = document.querySelector(".lightbox-next");
   const prevBtn = document.querySelector(".lightbox-prev");
 
-  if (closeBtn) closeBtn.addEventListener("click", closeLightbox);
-  if (nextBtn) nextBtn.addEventListener("click", nextMedia);
-  if (prevBtn) prevBtn.addEventListener("click", prevMedia);
+  if (closeBtn) {
+    closeBtn.addEventListener("click", closeLightbox);
+    closeBtn.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        closeLightbox();
+      }
+    });
+  }
+
+  if (nextBtn) {
+    nextBtn.addEventListener("click", nextMedia);
+    nextBtn.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        nextMedia();
+      }
+    });
+  }
+
+  if (prevBtn) {
+    prevBtn.addEventListener("click", prevMedia);
+    prevBtn.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        prevMedia();
+      }
+    });
+  }
+
+  // Écoute globale des touches pour navigation clavier
+  document.addEventListener("keydown", (e) => {
+    const lightbox = document.querySelector(".lightbox");
+    if (!lightbox || !lightbox.classList.contains("show")) return;
+
+    switch (e.key) {
+      case "Escape":
+        closeLightbox();
+        break;
+      case "ArrowRight":
+        nextMedia();
+        break;
+      case "ArrowLeft":
+        prevMedia();
+        break;
+    }
+  });
 });

@@ -73,6 +73,7 @@ function mediaTemplate(media, photographer) {
 
   function getLightboxDOM() {
     const container = document.createElement("div");
+    container.classList.add("lightbox-wrapper");
 
     const titleEl = document.createElement("p");
     titleEl.textContent = title;
