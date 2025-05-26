@@ -80,7 +80,20 @@
     </div>
     <script src="./scripts/templates/media.js"></script>
     <script src="./scripts/templates/photographer.js"></script>
-    <script src="./scripts/pages/photographer.js"></script>
     <script src="./scripts/utils/contactForm.js"></script>
+    <script src="./scripts/utils/lightbox.js"></script>
+    <script src="./scripts/pages/photographer.js"></script>
+    <div id="lightbox" class="lightbox" aria-hidden="true">
+      <button class="lightbox-close" aria-label="Fermer la lightbox">
+        &times;
+      </button>
+      <button class="lightbox-prev" aria-label="Image précédente">
+        &#10094;
+      </button>
+      <div class="lightbox-content"></div>
+      <button class="lightbox-next" aria-label="Image suivante">
+        &#10095;
+      </button>
+    </div>
   </body>
 </html>

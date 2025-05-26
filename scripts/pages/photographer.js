@@ -38,14 +38,24 @@ function displayMedia(mediaList, photographer) {
 
   let totalLikes = 0;
 
-  mediaList.forEach((media) => {
+  mediaList.forEach((media, index) => {
     const template = mediaTemplate(media, photographer);
     const mediaCard = template.getMediaCardDOM();
     totalLikes += template.likes;
+
+    // 🔥 Ajouter ouverture lightbox
+    const mediaEl = mediaCard.querySelector(".media-clickable");
+    mediaEl.addEventListener("click", () =>
+      openLightbox(index, mediaList, photographer)
+    );
+    mediaEl.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") openLightbox(index, mediaList, photographer);
+    });
+
     mediaSection.appendChild(mediaCard);
   });
 
-  //Mettre à jour le total likes et le prix
+  // Mettre à jour le total des likes
   updateTotaux(totalLikes, photographer.price);
 }
 
