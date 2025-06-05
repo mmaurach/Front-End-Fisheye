@@ -30,7 +30,7 @@ function mediaTemplate(media, photographer) {
     const mediaInfo = document.createElement("div");
     mediaInfo.classList.add("media-info");
 
-    const titleEl = document.createElement("h3");
+    const titleEl = document.createElement("h2");
     titleEl.textContent = title;
 
     const likesEl = document.createElement("p");
@@ -43,7 +43,7 @@ function mediaTemplate(media, photographer) {
     const iconHurt = document.createElement("i");
     iconHurt.setAttribute("class", "fa-solid fa-heart like-btn");
     iconHurt.setAttribute("tabindex", "0");
-    iconHurt.setAttribute("aria-label", "likes");
+    iconHurt.setAttribute("aria", "likes");
 
     likesEl.appendChild(span);
     likesEl.appendChild(iconHurt);

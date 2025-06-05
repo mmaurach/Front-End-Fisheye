@@ -5,6 +5,8 @@ function displayModal() {
 
 function closeModal() {
   const modal = document.getElementById("contact_modal");
+  resetErrors();
+  form.reset();
   modal.style.display = "none";
 }
 
@@ -28,6 +30,12 @@ function clearError(input) {
   formData.removeAttribute("data-error");
   formData.setAttribute("data-error-visible", "false");
   input.classList.remove("invalid");
+}
+
+function resetErrors() {
+  [firstName, lastName, email, message].forEach((input) => {
+    clearError(input);
+  });
 }
 
 // ===== Validations individuelles =====
@@ -109,7 +117,7 @@ form.addEventListener("submit", function (e) {
     });
 
     form.reset();
-    closeModal(); // Assure-toi que cette fonction existe
+    closeModal();
   } else {
     console.log("Formulaire invalide");
   }
