@@ -1,16 +1,20 @@
-//Recuperation de l'id depuis l'URL
+/* eslint-disable no-undef */
+/* eslint-disable no-unused-vars */
+
+// Récupère l'ID du photographe depuis l'URL (ex: photographer.html?id=243)
 function getPhotographerIdFromUrl() {
   const params = new URLSearchParams(window.location.search);
   return params.get("id");
 }
 
-//chercher depuis le fichier json l'element photographer qui correspond à l'id passé
+// Charge les données JSON et retourne l'objet photographe correspondant à l'ID
 async function getPhotographerById(id) {
   const response = await fetch("./data/photographers.json");
   const data = await response.json();
   return data.photographers.find((photographer) => photographer.id == id);
 }
 
+// Récupère tous les médias liés à un photographe spécifique
 async function getMediaByPhotographerId(id) {
   const response = await fetch("./data/photographers.json");
   const data = await response.json();
@@ -21,20 +25,19 @@ function displayPhotographer(photographer) {
   const header = document.querySelector(".photograph-header");
   const template = photographerTemplate(photographer);
 
-  // Structure gauche (nom, localisation, tagline)
+  // Partie gauche : nom, ville, slogan
   const userDetail = template.getUserDetail();
-  // Insertion avant et après le bouton
   const button = document.querySelector(".contact_button");
   header.insertBefore(userDetail, button);
 
-  // Structure droite (photo)
+  // Partie droite : photo de profil
   const photoEl = template.getUserPhoto();
   header.appendChild(photoEl);
 }
 
 function displayMedia(mediaList, photographer) {
   const mediaSection = document.querySelector(".media-section");
-  mediaSection.innerHTML = "";
+  mediaSection.innerHTML = ""; // Vide la section avant de réinsérer
 
   let totalLikes = 0;
 
@@ -43,7 +46,7 @@ function displayMedia(mediaList, photographer) {
     const mediaCard = template.getMediaCardDOM();
     totalLikes += template.likes;
 
-    // 🔥 Ajouter ouverture lightbox
+    // Lightbox ouverture (clic ou touche Entrée)
     const mediaEl = mediaCard.querySelector(".media-clickable");
     mediaEl.addEventListener("click", () =>
       openLightbox(index, mediaList, photographer)
@@ -55,42 +58,37 @@ function displayMedia(mediaList, photographer) {
     mediaSection.appendChild(mediaCard);
   });
 
-  // Mettre à jour le total des likes
-  updateTotaux(totalLikes, photographer.price);
+  updateTotaux(totalLikes, photographer.price); // Maj likes et tarif
 }
 
 function updateTotaux(totalLikes, price) {
-  const totalLikesEl = document.querySelector(".total-likes");
-  const priceEl = document.querySelector(".price");
-
-  totalLikesEl.textContent = `${totalLikes}`;
-  priceEl.textContent = `${price}€/jour`;
+  document.querySelector(".total-likes").textContent = `${totalLikes}`;
+  document.querySelector(".price").textContent = `${price}€/jour`;
 }
 
+// Mise à jour dynamique du total des likes (après clic sur cœur)
 function updateTotalLikes(sens) {
   const totalLikesEl = document.querySelector(".total-likes");
   let totalLikes = parseInt(totalLikesEl.textContent);
 
-  if (sens == 1) {
-    totalLikesEl.textContent = totalLikes + 1;
-  }
-  if (sens == -1) {
-    totalLikesEl.textContent = totalLikes - 1;
-  }
+  if (sens == 1) totalLikesEl.textContent = totalLikes + 1;
+  if (sens == -1) totalLikesEl.textContent = totalLikes - 1;
 }
 
 function setupSortDropdown(mediaList, photographer) {
   const select = document.querySelector("#sort-select");
 
+  // Lorsque l’utilisateur sélectionne un critère de tri
   select.addEventListener("change", (e) => {
     const selected = e.target.value;
     const sorted = sortMedia(mediaList, selected);
-    displayMedia(sorted, photographer);
+    displayMedia(sorted, photographer); // Réaffiche les médias triés
   });
 }
 
+// Trie les médias selon le critère choisi
 function sortMedia(mediaList, criterion) {
-  const sorted = [...mediaList];
+  const sorted = [...mediaList]; // Copie pour éviter de modifier l'original
 
   switch (criterion) {
     case "popularity":
@@ -108,7 +106,7 @@ function sortMedia(mediaList, criterion) {
 }
 
 async function init() {
-  const photographerId = getPhotographerIdFromUrl();
+  const photographerId = getPhotographerIdFromUrl(); // ID via URL
   const photographer = await getPhotographerById(photographerId);
 
   if (!photographer) {
@@ -117,9 +115,10 @@ async function init() {
   }
 
   const mediaList = await getMediaByPhotographerId(photographerId);
-  displayPhotographer(photographer);
-  setupSortDropdown(mediaList, photographer);
-  displayMedia(mediaList, photographer);
+
+  displayPhotographer(photographer); // Affiche l’en-tête
+  setupSortDropdown(mediaList, photographer); // Initialise le tri
+  displayMedia(mediaList, photographer); // Affiche les médias
 }
 
-init();
+init(); // Lancement automatique au chargement de la page

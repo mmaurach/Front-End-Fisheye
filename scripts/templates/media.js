@@ -1,12 +1,27 @@
+/* eslint-disable no-undef */
+/* eslint-disable no-unused-vars */
+
+// ============================
+// TEMPLATE POUR UN MÉDIA
+// ============================
+
 function mediaTemplate(media, photographer) {
+  // Déstructuration des données du média
   const { title, image, video, likes } = media;
-  let cardLike = likes;
+  let cardLike = likes; // compteur de likes spécifique à cette carte
+
+  // Extraction du nom de dossier à partir du nom du photographe
   const folderName = photographer.name.split(" ")[0].replace("-", " ");
 
+  // ==========================================
+  // GÉNÉRATION DE LA CARTE MÉDIA POUR LA PAGE
+  // ==========================================
   function getMediaCardDOM() {
     const article = document.createElement("article");
 
     let mediaElement;
+
+    // Si le média est une image
     if (image) {
       mediaElement = document.createElement("img");
       mediaElement.setAttribute(
@@ -14,7 +29,9 @@ function mediaTemplate(media, photographer) {
         `./assets/images/${folderName}/${image}`
       );
       mediaElement.setAttribute("alt", title);
-    } else {
+    }
+    // Si le média est une vidéo
+    else {
       mediaElement = document.createElement("video");
       mediaElement.setAttribute(
         "src",
@@ -23,16 +40,20 @@ function mediaTemplate(media, photographer) {
       mediaElement.setAttribute("controls", true);
     }
 
-    mediaElement.setAttribute("tabindex", "0"); // pour accessibilité
+    // Accessibilité : rendre l’élément focusable au clavier
+    mediaElement.setAttribute("tabindex", "0");
     mediaElement.classList.add("media-clickable");
     mediaElement.style.cursor = "pointer";
 
+    // Création du bloc info (titre + likes)
     const mediaInfo = document.createElement("div");
     mediaInfo.classList.add("media-info");
 
+    // Titre du média
     const titleEl = document.createElement("h2");
     titleEl.textContent = title;
 
+    // Bloc de likes
     const likesEl = document.createElement("p");
     likesEl.classList.add("media-likes");
 
@@ -40,37 +61,55 @@ function mediaTemplate(media, photographer) {
     span.classList.add("likes-count");
     span.textContent = `${likes}`;
 
-    const iconHurt = document.createElement("i");
-    iconHurt.setAttribute("class", "fa-solid fa-heart like-btn");
-    iconHurt.setAttribute("tabindex", "0");
-    iconHurt.setAttribute("aria", "likes");
+    const iconHeart = document.createElement("i");
+    iconHeart.setAttribute("class", "fa-solid fa-heart like-btn");
+    iconHeart.setAttribute("tabindex", "0");
+    iconHeart.setAttribute("aria", "likes");
 
+    // Construction de la structure HTML
     likesEl.appendChild(span);
-    likesEl.appendChild(iconHurt);
+    likesEl.appendChild(iconHeart);
     mediaInfo.appendChild(titleEl);
     mediaInfo.appendChild(likesEl);
     article.appendChild(mediaElement);
     article.appendChild(mediaInfo);
 
-    iconHurt.addEventListener("click", () => {
-      const isLiked = iconHurt.classList.contains("fa-solid");
+    // Fonction de bascule like/unlike
+    function toggleLike() {
+      const isLiked = iconHeart.classList.contains("fa-solid");
       if (isLiked) {
+        // Si déjà liké, on enlève un like
         cardLike -= 1;
-        iconHurt.classList.remove("fa-solid");
-        iconHurt.classList.add("fa-regular");
+        iconHeart.classList.remove("fa-solid");
+        iconHeart.classList.add("fa-regular");
         updateTotalLikes(-1);
       } else {
+        // Sinon, on ajoute un like
         cardLike += 1;
-        iconHurt.classList.add("fa-solid");
-        iconHurt.classList.remove("fa-regular");
+        iconHeart.classList.add("fa-solid");
+        iconHeart.classList.remove("fa-regular");
         updateTotalLikes(1);
       }
       span.textContent = cardLike;
+    }
+
+    // Click avec souris
+    iconHeart.addEventListener("click", toggleLike);
+
+    // Activation au clavier
+    iconHeart.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        toggleLike();
+      }
     });
 
     return article;
   }
 
+  // ==========================================
+  // TEMPLATE POUR L’AFFICHAGE DANS LA LIGHTBOX
+  // ==========================================
   function getLightboxDOM() {
     const container = document.createElement("div");
     container.classList.add("lightbox-wrapper");
@@ -80,6 +119,7 @@ function mediaTemplate(media, photographer) {
     titleEl.classList.add("lightbox-title");
 
     let mediaEl;
+
     if (image) {
       mediaEl = document.createElement("img");
       mediaEl.setAttribute("src", `./assets/images/${folderName}/${image}`);
@@ -95,5 +135,6 @@ function mediaTemplate(media, photographer) {
     return container;
   }
 
+  // On retourne les deux méthodes utiles à l’extérieur
   return { getMediaCardDOM, getLightboxDOM, likes };
 }
