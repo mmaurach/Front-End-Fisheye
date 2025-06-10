@@ -1,31 +1,48 @@
 /* eslint-disable no-unused-vars */
 
-// Affiche la modale de contact en modifiant son style CSS
-function displayModal() {
-  const modal = document.getElementById("contact_modal");
-  modal.style.display = "flex";
-}
-
-// Ferme la modale de contact, réinitialise les erreurs et les champs du formulaire
-function closeModal() {
-  const modal = document.getElementById("contact_modal");
-  resetErrors(); // Nettoie les messages d’erreur
-  form.reset(); // Réinitialise les champs du formulaire
-  modal.style.display = "none";
-}
-
 const form = document.getElementById("contactForm");
 const firstName = form.firstName;
 const lastName = form.lastName;
 const email = form.email;
 const message = form.message;
+const submitBtn = document.getElementById("contact-submit"); // Bouton envoyer
+
+// Affiche la modale de contact
+function displayModal() {
+  const modal = document.getElementById("contact_modal");
+  modal.style.display = "flex";
+
+  // Focus sur le champ "Prénom" à l'ouverture
+  firstName.focus();
+
+  // Ajout d'un écouteur pour la touche Échap
+  document.addEventListener("keydown", handleEscapeKey);
+}
+
+// Ferme la modale de contact et réinitialise les erreurs et le formulaire
+function closeModal() {
+  const modal = document.getElementById("contact_modal");
+  resetErrors();
+  form.reset();
+  modal.style.display = "none";
+
+  // Supprimer l'écouteur Échap
+  document.removeEventListener("keydown", handleEscapeKey);
+}
+
+// Gère la fermeture avec la touche Échap
+function handleEscapeKey(e) {
+  if (e.key === "Escape") {
+    closeModal();
+  }
+}
 
 // Affiche un message d’erreur sur un champ spécifique
 function showError(input, message) {
   const formData = input.parentElement;
-  formData.setAttribute("data-error", message); // Ajoute le message d’erreur personnalisé
-  formData.setAttribute("data-error-visible", "true"); // Active l’affichage visuel de l’erreur
-  input.classList.add("invalid"); // Applique un style d'erreur au champ
+  formData.setAttribute("data-error", message);
+  formData.setAttribute("data-error-visible", "true");
+  input.classList.add("invalid");
 }
 
 // Supprime le message d’erreur d’un champ
@@ -100,7 +117,7 @@ function validateForm() {
   return validFirstName && validLastName && validEmail && validMessage;
 }
 
-// Valide dynamiquement chaque champ à chaque saisie de l'utilisateur
+// Validation en direct sur chaque champ
 firstName.addEventListener("input", () => validateName(firstName, "Prénom"));
 lastName.addEventListener("input", () => validateName(lastName, "Nom"));
 email.addEventListener("input", () => validateEmail(email));
@@ -111,7 +128,6 @@ form.addEventListener("submit", function (e) {
   e.preventDefault();
 
   if (validateForm()) {
-    // Si tout est valide, on affiche les données dans la console
     console.log("Formulaire valide !");
     console.log({
       firstName: firstName.value.trim(),
@@ -120,9 +136,17 @@ form.addEventListener("submit", function (e) {
       message: message.value.trim(),
     });
 
-    form.reset(); // Réinitialise les champs
-    closeModal(); // Ferme la modale
+    form.reset();
+    closeModal();
   } else {
     console.log("Formulaire invalide");
+  }
+});
+
+// Déclenche le submit en appuyant sur Entrée ou Espace sur le bouton
+submitBtn.addEventListener("keydown", function (e) {
+  if (e.key === "Enter" || e.key === " ") {
+    e.preventDefault();
+    submitBtn.click();
   }
 });

@@ -62,9 +62,10 @@ function mediaTemplate(media, photographer) {
     span.textContent = `${likes}`;
 
     const iconHeart = document.createElement("i");
-    iconHeart.setAttribute("class", "fa-solid fa-heart like-btn");
-    iconHeart.setAttribute("tabindex", "0");
-    iconHeart.setAttribute("aria", "likes");
+    iconHeart.setAttribute("class", "fa-regular fa-heart like-btn");
+    iconHeart.setAttribute("role", "button"); // rôle explicite pour les lecteurs d’écran
+    iconHeart.setAttribute("tabindex", "0"); // focusable avec Tab
+    iconHeart.setAttribute("aria-label", "Ajouter un like"); // description précise pour accessibilité
 
     // Construction de la structure HTML
     likesEl.appendChild(span);
@@ -78,17 +79,17 @@ function mediaTemplate(media, photographer) {
     function toggleLike() {
       const isLiked = iconHeart.classList.contains("fa-solid");
       if (isLiked) {
-        // Si déjà liké, on enlève un like
         cardLike -= 1;
         iconHeart.classList.remove("fa-solid");
         iconHeart.classList.add("fa-regular");
         updateTotalLikes(-1);
+        iconHeart.setAttribute("aria-label", "Ajouter un like");
       } else {
-        // Sinon, on ajoute un like
         cardLike += 1;
         iconHeart.classList.add("fa-solid");
         iconHeart.classList.remove("fa-regular");
         updateTotalLikes(1);
+        iconHeart.setAttribute("aria-label", "Retirer le like");
       }
       span.textContent = cardLike;
     }
