@@ -34,7 +34,6 @@ function displayPhotographer(photographer) {
   const photoEl = template.getUserPhoto();
   header.appendChild(photoEl);
 }
-
 function displayMedia(mediaList, photographer) {
   const mediaSection = document.querySelector(".media-section");
   mediaSection.innerHTML = ""; // Vide la section avant de réinsérer
@@ -46,19 +45,25 @@ function displayMedia(mediaList, photographer) {
     const mediaCard = template.getMediaCardDOM();
     totalLikes += template.likes;
 
-    // Lightbox ouverture (clic ou touche Entrée)
+    // Sélectionne l'élément média (img ou vidéo cliquable)
     const mediaEl = mediaCard.querySelector(".media-clickable");
+
+    // Ajoute les événements d'ouverture de lightbox
     mediaEl.addEventListener("click", () =>
       openLightbox(index, mediaList, photographer)
     );
+
     mediaEl.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") openLightbox(index, mediaList, photographer);
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault(); // Évite le scroll involontaire avec la touche espace
+        openLightbox(index, mediaList, photographer);
+      }
     });
 
     mediaSection.appendChild(mediaCard);
   });
 
-  updateTotaux(totalLikes, photographer.price); // Maj likes et tarif
+  updateTotaux(totalLikes, photographer.price);
 }
 
 function updateTotaux(totalLikes, price) {

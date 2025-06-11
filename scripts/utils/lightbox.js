@@ -5,16 +5,10 @@
 // GESTION DE LA LIGHTBOX
 // =========================
 
-// Index de l’élément actuellement affiché dans la lightbox
 let currentIndex = 0;
-
-// Liste des médias du photographe courant
 let mediaItems = [];
-
-// Objet contenant les informations du photographe courant
 let currentPhotographer = null;
 
-// Affiche la lightbox avec le média correspondant à l’index donné
 function openLightbox(index, mediaList, photographer) {
   currentIndex = index;
   mediaItems = mediaList;
@@ -24,36 +18,62 @@ function openLightbox(index, mediaList, photographer) {
   lightbox.classList.add("show");
   lightbox.setAttribute("aria-hidden", "false");
 
-  displayLightboxMedia(index); // Affiche le média dans la lightbox
+  displayLightboxMedia(index);
+
+  // === FOCUS TRAP SIMPLE ===
+  const focusableSelectors =
+    'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+  const focusableEls = Array.from(
+    lightbox.querySelectorAll(focusableSelectors)
+  );
+  const firstEl = focusableEls[0];
+  const lastEl = focusableEls[focusableEls.length - 1];
+
+  function trapFocus(e) {
+    if (e.key !== "Tab") return;
+
+    if (e.shiftKey && document.activeElement === firstEl) {
+      e.preventDefault();
+      lastEl.focus();
+    } else if (!e.shiftKey && document.activeElement === lastEl) {
+      e.preventDefault();
+      firstEl.focus();
+    }
+  }
+
+  document.addEventListener("keydown", trapFocus);
+  lightbox._trapFocusHandler = trapFocus;
+
+  // Focus initial sur la croix
+  firstEl?.focus();
 }
 
-// Ferme la lightbox en la masquant et en retirant les attributs d’accessibilité
 function closeLightbox() {
   const lightbox = document.getElementById("lightbox");
   lightbox.classList.remove("show");
   lightbox.setAttribute("aria-hidden", "true");
+
+  // === ENLÈVE FOCUS TRAP
+  if (lightbox._trapFocusHandler) {
+    document.removeEventListener("keydown", lightbox._trapFocusHandler);
+    delete lightbox._trapFocusHandler;
+  }
 }
 
-// Affiche un média spécifique dans la lightbox
 function displayLightboxMedia(index) {
   const container = document.querySelector(".lightbox-content");
-  container.innerHTML = ""; // Nettoyage de l'ancien contenu
+  container.innerHTML = "";
 
   const media = mediaItems[index];
-
-  // Récupération de l'élément DOM du média via le template
   const mediaDOM = mediaTemplate(media, currentPhotographer).getLightboxDOM();
-
   container.appendChild(mediaDOM);
 }
 
-// Passe au média suivant (avec boucle en fin de liste)
 function nextMedia() {
   currentIndex = (currentIndex + 1) % mediaItems.length;
   displayLightboxMedia(currentIndex);
 }
 
-// Passe au média précédent (avec boucle en début de liste)
 function prevMedia() {
   currentIndex = (currentIndex - 1 + mediaItems.length) % mediaItems.length;
   displayLightboxMedia(currentIndex);
@@ -68,7 +88,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const nextBtn = document.querySelector(".lightbox-next");
   const prevBtn = document.querySelector(".lightbox-prev");
 
-  // Fermeture via clic ou clavier (Entrée ou Espace)
+  // Fermeture via clic ou clavier
   if (closeBtn) {
     closeBtn.addEventListener("click", closeLightbox);
     closeBtn.addEventListener("keydown", (e) => {
@@ -79,7 +99,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Navigation suivante
+  // Suivant
   if (nextBtn) {
     nextBtn.addEventListener("click", nextMedia);
     nextBtn.addEventListener("keydown", (e) => {
@@ -90,7 +110,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Navigation précédente
+  // Précédent
   if (prevBtn) {
     prevBtn.addEventListener("click", prevMedia);
     prevBtn.addEventListener("keydown", (e) => {
@@ -101,19 +121,19 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Navigation clavier globale uniquement quand la lightbox est ouverte
+  // Navigation clavier globale
   document.addEventListener("keydown", (e) => {
     const lightbox = document.querySelector(".lightbox");
     if (!lightbox || !lightbox.classList.contains("show")) return;
 
     switch (e.key) {
-      case "Escape": // Fermer avec la touche Échap
+      case "Escape":
         closeLightbox();
         break;
-      case "ArrowRight": // Aller à l’image suivante
+      case "ArrowRight":
         nextMedia();
         break;
-      case "ArrowLeft": // Aller à l’image précédente
+      case "ArrowLeft":
         prevMedia();
         break;
     }
