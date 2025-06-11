@@ -61,7 +61,7 @@ function mediaTemplate(media, photographer) {
     span.classList.add("likes-count");
     span.textContent = `${likes}`;
 
-    const iconHeart = document.createElement("i");
+    const iconHeart = document.createElement("span");
     iconHeart.setAttribute("class", "fa-regular fa-heart like-btn");
     iconHeart.setAttribute("role", "button"); // rôle explicite pour les lecteurs d’écran
     iconHeart.setAttribute("tabindex", "0"); // focusable avec Tab
