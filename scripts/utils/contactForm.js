@@ -144,9 +144,14 @@ form.addEventListener("submit", function (e) {
 });
 
 // Déclenche le submit en appuyant sur Entrée ou Espace sur le bouton
-submitBtn.addEventListener("keydown", function (e) {
-  if (e.key === "Enter" || e.key === " ") {
-    e.preventDefault();
-    submitBtn.click();
+document.addEventListener("DOMContentLoaded", () => {
+  const submitBtn = document.getElementById("submitBtn");
+  if (submitBtn) {
+    submitBtn.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        submitBtn.click();
+      }
+    });
   }
 });
